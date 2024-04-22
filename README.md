@@ -1,6 +1,6 @@
 - Hi, I’m @ws9577
 
-- I’m currently learning k8s(k3s) + websites
+
 
 
 
