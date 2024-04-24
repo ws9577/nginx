@@ -1,0 +1,35 @@
+server {
+    listen 80;
+    server_name bonbon.xyz;
+
+    location / {
+        proxy_pass http://192.168.122.xxx:8080;
+    }
+}
+
+server {
+    listen 80;
+    server_name cookee.xyz;
+
+    location / {
+        proxy_pass http://192.168.122.xxx:8080;
+    }
+}
+
+server {
+    listen 80;
+    server_name sub1.bonbon.xyz;
+
+    location / {
+        root /path/to/sub1/directory;
+    }
+}
+
+server {
+    listen 80;
+    server_name sub2.bonbon.xyz;
+
+    location / {
+        root /path/to/sub2/directory;
+    }
+}
