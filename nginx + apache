@@ -1,0 +1,78 @@
+# nginx
+
+upstream apache {
+    server 192.168.122.100:8080;  # Apache is running on this IP and port
+}
+
+server {
+    listen 192.168.0.102:80;  # Nginx listens on this IP and port
+    server_name example.com www.example.com;
+
+    location / {
+        proxy_pass http://apache;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+# You may also need to configure Nginx to bind to the specific IP address
+# /etc/nginx/nginx.conf
+
+http {
+    # Other directives...
+    server_tokens off;
+
+    # Bind to the specific IP address
+    bind 192.168.0.102;
+
+    # Other configuration blocks...
+}
+
+# apache side
+# httpd.conf or apache2.conf
+
+Listen 192.168.122.100:8080
+
+# apache
+<Directory "/var/www/html">
+    # Other directives...
+    Require all granted
+    Allow from 192.168.0.102  # Replace with the IP address of your Nginx server
+</Directory>
+
+# Main server configuration
+ServerRoot "/etc/apache2"
+Listen 192.168.122.100:8080
+ServerName example.com
+DocumentRoot "/var/www/html"
+
+# Module loading
+LoadModule mod_ssl.so
+LoadModule mod_rewrite.so
+
+# Virtual host configuration
+<VirtualHost *:80>
+    ServerName www.example.com
+    DocumentRoot "/var/www/example"
+    <Directory "/var/www/example">
+        Options +Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+# Log files
+ErrorLog "/var/log/apache2/error.log"
+CustomLog "/var/log/apache2/access.log" combined
+
+# Other configurations
+Timeout 300
+KeepAlive On
+MaxKeepAliveRequests 100
+
+# proxy module
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+
+# Your Apache virtual host configuration goes here
