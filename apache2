@@ -1,0 +1,7 @@
+apt search libapache2-mod # search modules
+
+a2enmod # enable a mod
+a2dismod # disable a mod
+
+a2ensite # enable a site, check site-available
+a2dissite # disable a site
