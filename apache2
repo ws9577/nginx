@@ -5,3 +5,19 @@ a2dismod # disable a mod
 
 a2ensite # enable a site, check site-available
 a2dissite # disable a site
+
+# Enable necessary modules for security:
+sudo a2enmod headers rewrite ssl
+
+# Secure Apache Configuration: Modify /etc/apache2/conf-available/security.conf:
+ServerTokens Prod
+ServerSignature Off
+TraceEnable Off
+Header always set X-Content-Type-Options nosniff
+Header always set X-XSS-Protection "1; mode=block"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Referrer-Policy "no-referrer-when-downgrade"
+Header always set Content-Security-Policy "default-src 'self';"
+
+
+
