@@ -6,7 +6,7 @@ a2dismod # disable a mod
 a2ensite # enable a site, check site-available
 a2dissite # disable a site
 
-# Enable necessary modules for security:
+# back end webserver, Enable necessary modules for security:
 sudo a2enmod headers rewrite ssl
 
 # Secure Apache Configuration: Modify /etc/apache2/conf-available/security.conf:
