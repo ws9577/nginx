@@ -1,0 +1,75 @@
+# vi wp-config.php
+
+define( 'WP_ALLOW_MULTISITE', true );
+
+/* Add any custom values between this line and the "stop editing" line. */
+
+define( 'MULTISITE', true );
+define( 'SUBDOMAIN_INSTALL', false );
+define( 'DOMAIN_CURRENT_SITE', 'bonbon.win' );
+define( 'PATH_CURRENT_SITE', '/' );
+define( 'SITE_ID_CURRENT_SITE', 1 );
+define( 'BLOG_ID_CURRENT_SITE', 1 );
+
+----------------------------
+vi .htaccess
+
+# begin
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+
+# add a trailing slash to /wp-admin
+RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ $1wp-admin/ [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(wp-(content|admin|includes).*) $2 [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ $2 [L]
+RewriteRule . index.php [L]
+
+# end
+
+----------------------------------
+# /wp-content/themes/your-theme/functions.php
+# 添加以下代碼來修改 .htaccess 文件的內容：
+
+function custom_htaccess_rules($rules) {
+    // 添加你想要的自定義規則
+    $custom_rules = <<<EOD
+    # BEGIN Custom Rules
+    <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^custom-rule$ /index.php [L]
+    </IfModule>
+    # END Custom Rules
+    EOD;
+    
+    return $custom_rules . $rules; // 將自定義規則添加到現有的 WordPress 規則之前
+}
+
+add_filter('mod_rewrite_rules', 'custom_htaccess_rules');
+
+# option 2
+# Add a filter to modify .htaccess rules:
+add_filter('mod_rewrite_rules', 'custom_htaccess_rules');
+function custom_htaccess_rules($rules) {
+    $new_rules = "# My custom rules\n";
+    $new_rules .= "RewriteRule ^custom-page$ /index.php?page_id=123 [QSA,L]\n";
+    $new_rules .= "# End custom rules\n\n";
+    return $new_rules . $rules;
+}
+
+# To remove specific rules, you can use string manipulation:
+add_filter('mod_rewrite_rules', 'remove_specific_rules');
+function remove_specific_rules($rules) {
+    // Remove a specific line or section
+    $rules = str_replace("RewriteRule ^index\.php$ - [L]\n", "", $rules);
+    return $rules;
+}
+
+
+
+
