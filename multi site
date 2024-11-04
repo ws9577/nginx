@@ -32,6 +32,39 @@ RewriteRule . index.php [L]
 
 # end
 
+---------------------------------
+# edit /etc/apache2/sites-enabled/bonbon.conf
+
+<VirtualHost *:80>
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride all
+        </Directory>
+        <Directory /var/www/>
+                Options FollowSymLinks
+                AllowOverride all
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+# or
+/etc/apache2/httpd.conf. Need to do 'AllowOverride All' under Section <Directory "/Users/user1/Sites">
+
+# And don't forget to enable mod_rewrite in httpd.conf:
+LoadModule rewrite_module libexec/apache2/mod_rewrite.so
+
+# Otherwise it gives 500 error.
+
+
 ----------------------------------
 # /wp-content/themes/your-theme/functions.php
 # 添加以下代碼來修改 .htaccess 文件的內容：
